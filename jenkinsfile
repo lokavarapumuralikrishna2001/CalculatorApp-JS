@@ -1,3 +1,4 @@
+```groovy
 pipeline {
     agent any
 
@@ -12,14 +13,40 @@ pipeline {
         stage('Validate Files') {
             steps {
                 echo 'Checking application files...'
-
                 sh '''
                     set -e
                     test -f index.html
                     test -f index.js
                     test -f style.css
-
                     echo "All required application files are available."
+                '''
+            }
+        }
+
+        stage('Deploy to Nginx') {
+            steps {
+                echo 'Deploying CalculatorApp-JS to Nginx...'
+                sh '''
+                    set -e
+
+                    sudo /usr/bin/cp index.html /usr/share/nginx/html/index.html
+                    sudo /usr/bin/cp index.js /usr/share/nginx/html/index.js
+                    sudo /usr/bin/cp style.css /usr/share/nginx/html/style.css
+
+                    echo "Application files deployed successfully."
+                '''
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                echo 'Checking the deployed website...'
+                sh '''
+                    set -e
+                    test -s /usr/share/nginx/html/index.html
+                    test -s /usr/share/nginx/html/index.js
+                    test -s /usr/share/nginx/html/style.css
+                    echo "Deployment verification successful."
                 '''
             }
         }
@@ -27,7 +54,7 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'CalculatorApp-JS deployment completed successfully!'
         }
 
         failure {
@@ -35,3 +62,4 @@ pipeline {
         }
     }
 }
+```
