@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                echo 'Retrieving source code from GitHub...'
+                checkout scm
+            }
+        }
+
+        stage('Validate Files') {
+            steps {
+                echo 'Checking application files...'
+
+                sh '''
+                    set -e
+
+                    test -f index.html
+                    test -f index.js
+                    test -f style.css
+
+                    echo "All required application files are available."
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+
+        failure {
+            echo 'Pipeline failed. Check the Console Output.'
+        }
+    }
+}
