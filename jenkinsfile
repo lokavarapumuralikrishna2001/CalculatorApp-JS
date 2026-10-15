@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     stages {
-
         stage('Checkout') {
             steps {
                 echo 'Retrieving source code from GitHub...'
@@ -16,7 +15,6 @@ pipeline {
 
                 sh '''
                     set -e
-
                     test -f index.html
                     test -f index.js
                     test -f style.css
